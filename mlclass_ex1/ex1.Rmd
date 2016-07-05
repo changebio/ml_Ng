@@ -1,0 +1,44 @@
+---
+title: "ex1"
+author: "hy"
+date: "2016年7月5日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+tropical=  c('darkorange', 'dodgerblue', 'hotpink', 'limegreen', 'yellow')
+palette(tropical)
+par(pch=19)
+```
+
+```{r read and ploting}
+data <- read.table("mlclass_ex1/ex1data1.txt",sep = ",")
+X <- data[,1]
+y <- data[,2]
+plot(y~X)
+
+```
+
+```{r Grandient descent}
+X<- matrix(c(rep(1,nrow(data)),data[,1]),ncol=2)
+theta <- rep(0,2)
+iterations <- 1500
+alpha <- 0.01
+computeCost(X,y,theta)
+```
+
+```{r fun computeCost}
+computeCost <- function(X,y,theta){
+
+  m <- length(y);
+  predictions <- X%*%theta;
+  sqrErrors <- (predictions - y)^2;
+  
+  J <- 1.0/(2*m)*sum(sqrErrors);
+  return(J)
+}
+```
+
+
+
