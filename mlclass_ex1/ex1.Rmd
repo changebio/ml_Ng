@@ -23,10 +23,41 @@ plot(y~X)
 ```{r Grandient descent}
 X<- matrix(c(rep(1,nrow(data)),data[,1]),ncol=2)
 theta <- rep(0,2)
+
+#Some gradient descent settings
 iterations <- 1500
 alpha <- 0.01
+
+# compute and display initial cost
 computeCost(X,y,theta)
+
+# run gradient descent
+theta <- gradientDescent(X,y,theta,alpha,iterations)
+theta
+abline(a=theta[1],b = theta[2],col=2,lwd = 5)
+predict1 <- c(1,3.5)%*%theta
+predict2 <- c(1,7)%*%theta
 ```
+
+```{r Visualizing J(theta_0, theta_1)}
+# Grid over which we will calculate J
+theta0_vals <- seq(-10,10,length.out = 100)
+theta1_vals <- seq(-1,4, length.out = 100)
+
+# initialize J_vals to a matrix of 0's
+require(phonTools)
+J_vals <- zeros(length(theta0_vals),length(theta1_vals))
+for(i in 1:length(theta0_vals)){
+  for(j in 1:length(theta1_vals)){
+    t <- c(theta0_vals[i],theta1_vals[j])
+    J_vals[i,j]<- computeCost(X,y,t)
+  }
+}
+J_vals<- t(J_vals)
+require(rgl)
+persp3d(theta0_vals,theta1_vals,J_vals,col=rainbow(25))
+```
+
 
 ```{r fun computeCost}
 computeCost <- function(X,y,theta){
@@ -37,6 +68,19 @@ computeCost <- function(X,y,theta){
   
   J <- 1.0/(2*m)*sum(sqrErrors);
   return(J)
+}
+```
+
+```{r fun gradientDescent}
+gradientDescent <- function(X,y,theta,alpha,num_iters){
+  m <- length(y);
+  for(iter in 1:num_iters){
+    htheta <- X%*%theta;
+    theta0 <- theta[1] - alpha/m*sum((htheta - y)*X[,1]);
+    theta1 <- theta[2] - alpha/m*sum((htheta - y)*X[,2]);
+    theta <- c(theta0, theta1);
+  }
+  return(theta)
 }
 ```
 
